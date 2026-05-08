@@ -38,6 +38,45 @@ void XorEncryption(IN PBYTE pShellCode, IN SIZE_T sSizeOfShellCOde, IN PBYTE bKe
 	}
 }
 
+void WriteToLsbBmp(IN CONST PCHAR pBmpInput, IN CONST PCHAR pBmpOutput, IN PBYTE pXorShellCode, IN SIZE_T sSizeOfShellCode ){
+	//open bmp
+	PFILE pfin = fopen(pBmpInput, "rb" );
+	if(!pfin){
+		printf("could not get bmp file \n");
+	}
+	
+	// read bmp
+	fseek(fin, 0, SEEK_END);
+	SIZE_T sSizeOfBmpFile = ftell(fin);
+	rewind(fin);
+	
+	// put bmp in buffer
+	PBYTE pBmpBuffer = (PBYTE)malloc(sSizeOfBmpFile);
+	if(!BmpBuffer){
+		printf("unable to create a buffer/n");
+		fclose(fin);
+	}
+	
+	fread {pBmpBuffer, 1, sSizeOfBmpFile, fin);
+	fclose(fin);
+	
+	//checking if we have enought bits 
+	
+	// at 10 = 54 so pPixel = 54 where d is store in bmp
+	PDWORD pPixelOffset = (PDWORD)(pBmpBuffer + 10);
+	printf("pixel data offset is: ", pPixelOffset);
+	
+	// 1 bit per pixels so each shellcode bytes needs 8 byte of bmp 
+	SIZE_T sBitsNeeded = sSizeOfShellCOde * 8;
+	SIZE_T sAvailableSize = sSizeOfBmpFile - pPixelOffset
+	
+	if(sBitsNeeded > sAvailableSize){
+		printf("file to small to fit shellcode");
+	}
+	
+}
+
+
 int main(){
 	BYTE key[] = {0xBD};
 	XorEncryption(shellcode, sizeof(shellcode), key, sizeof(key));
