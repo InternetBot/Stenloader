@@ -21,5 +21,5 @@ LSB of a BMP image file. The image looks visually identical to the original.
 
 - Xor Encryption :Done:
 - Write to LSB :Done:
-- Read from LSB :Nope:
-- Execute :Nope:
+- Read from LSB :Done:
+- Execute :Done:
