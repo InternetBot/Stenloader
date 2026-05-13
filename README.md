@@ -46,4 +46,42 @@ invisible to the human eye. So let's say we have a pixel byte like this:
 We can change the Least Significant Bit from 1 to 0 and there will be no 
 visual change to the image whatsoever.
 
-![HighLevelFlow](images/lsb1.png)
+![lsb2](images/lsb1.png)
+
+## Embedding One Bit
+Remember why I highly discouraged using `0xFE` as your key earlier it is 
+because we are going to use it to clear the LSB so we can set it to 0.
+
+You might be wondering why we cannot just replace the LSB directly with 
+something like:
+
+```c
+lsb[i+6] = 1
+```
+
+That will not work because there is no way to directly access and replace a 
+single bit like that in C. So we are going to have to do a little bit of 
+binary operations using AND and OR gates. Should have paid more attention in 
+my computer architecture class but I did not — spent a lot of time figuring 
+this out.
+
+So the first step is to clear the LSB by setting it to 0 and we can do that 
+using an AND operation. `0xFE` which is the equivalent of `1 1 1 1 1 1 1 0` 
+will keep our entire pixel byte intact and only change the LSB to 0. Might 
+seem confusing but here is the breakdown:
+
+0xFE  = 1 1 1 1 1 1 1 0
+Pixel = 1 0 1 1 0 1 0 1
+AND   = 1 0 1 1 0 1 0 0  ← only the LSB changed to 0
+
+Example 2:
+0xFE  = 1 1 1 1 1 1 1 0
+Pixel = 1 0 0 0 1 1 1 1
+AND   = 1 0 0 0 1 1 1 0  ← only the LSB changed to 0
+
+![force](images/force.png)
+
+As you can see in both examples every bit stays exactly the same except the 
+LSB which always gets forced to 0. That is the whole point of `0xFE` it 
+is a mask that surgically clears only the last bit and nothing else.
+
