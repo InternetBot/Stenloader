@@ -69,7 +69,7 @@ So the first step is to clear the LSB by setting it to 0 and we can do that
 using an AND operation. `0xFE` which is the equivalent of `1 1 1 1 1 1 1 0` 
 will keep our entire pixel byte intact and only change the LSB to 0. Might 
 seem confusing but here is the breakdown:
-
+```
 0xFE  = 1 1 1 1 1 1 1 0
 Pixel = 1 0 1 1 0 1 0 1
 AND   = 1 0 1 1 0 1 0 0  ← only the LSB changed to 0
@@ -78,7 +78,7 @@ Example 2:
 0xFE  = 1 1 1 1 1 1 1 0
 Pixel = 1 0 0 0 1 1 1 1
 AND   = 1 0 0 0 1 1 1 0  ← only the LSB changed to 0
-
+```
 ![force](images/force.png)
 
 As you can see in both examples every bit stays exactly the same except the 
