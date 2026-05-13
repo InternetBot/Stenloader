@@ -117,4 +117,41 @@ So your BMP needs at least 2208 pixel bytes available after the header for
 the shellcode to fit. The bigger the image the more space you have.
 
 ##Extracting the bit
+Like I said before there is no way to directly access a single bit like 
+`byte.bit[7]`  it simply does not exist in C. So in this scenario we are 
+going to use what is called bit shifting. Bit shifting moves the target bit 
+into the last position where it can then be isolated using `& 1`.
 
+Think of it like the sliding window algorithm
+https://www.geeksforgeeks.org/dsa/window-sliding-technique/
+
+You slide all the bits to the right until the target bit lands at position 0 
+which is the very last position. Then you mask everything else out with `& 1` 
+which is `0 0 0 0 0 0 0 1` keeping only the last bit and wiping everything 
+else out.
+
+AND works here because anything ANDed with 1 keeps its exact bit value and 
+anything ANDed with 0 gets wiped:
+1 AND 1 = 1  ← kept
+0 AND 1 = 0  ← kept
+1 AND 0 = 0  ← wiped
+0 AND 0 = 0  ← wiped
+
+So now we are going to take the first two bytes of the shellcode `0xFC` and 
+`0x48` and walk through the bit shifting process. It should look something 
+like this:
+
+![shift](images/shift1.png)
+![shift](images/shift2.png)
+
+Notice how shifting right by 7 pushes bit 7 all the way to position 0 
+where we can read it. Shifting right by 6 pushes bit 6 to position 0 
+and so on. The `& 1` then wipes out all the leftover bits that came 
+along for the ride leaving only the bit we wanted.
+
+0xFC and 0x48 are the first two bytes of our calc shellcode so these 
+are the exact bytes going through this process during embedding.
+
+Without bit shifting there is no way to break a byte down into individual 
+bits. And without individual bits you cannot embed one bit at a time into 
+pixel LSBs. The whole steganography technique depends on this being possible.
