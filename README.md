@@ -156,3 +156,20 @@ are the exact bytes going through this process during embedding.
 Without bit shifting there is no way to break a byte down into individual 
 bits. And without individual bits you cannot embed one bit at a time into 
 pixel LSBs. The whole steganography technique depends on this being possible.
+
+## Reassembling Bits Back Into a Byte
+During extraction each bit is placed back into its correct position 
+using left shift and OR. This is similar to what is above but just a left shitf and OR
+
+Start:         bReassembled = 0 0 0 0 0 0 0 0
+bit 7 = 1:     1 << 7 = 1 0 0 0 0 0 0 0
+OR result  1 0 0 0 0 0 0 0
+bit 6 = 1:     1 << 6 = 0 1 0 0 0 0 0 0
+OR result  1 1 0 0 0 0 0 0
+bit 5 = 1:     1 << 5 = 0 0 1 0 0 0 0 0
+OR result  1 1 1 0 0 0 0 0
+... continues until ...
+Final:         1 1 1 1 1 1 0 0 = 0xFC 
+
+## Full Embedding Flow
+![shift3](images/full.png)
