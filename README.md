@@ -62,7 +62,7 @@ lsb[i] = 1
 That will not work because there is no way to directly access and replace a 
 single bit like that in C. So we are going to have to do a little bit of 
 binary operations using AND and OR gates. Should have paid more attention in 
-my computer architecture class but I did not — spent a lot of time figuring 
+my computer architecture class but I did not  spent a lot of time figuring 
 this out.
 
 So the first step is to clear the LSB by setting it to 0 and we can do that 
@@ -132,10 +132,12 @@ else out.
 
 AND works here because anything ANDed with 1 keeps its exact bit value and 
 anything ANDed with 0 gets wiped:
+```
 1 AND 1 = 1  ← kept
 0 AND 1 = 0  ← kept
 1 AND 0 = 0  ← wiped
 0 AND 0 = 0  ← wiped
+```
 
 So now we are going to take the first two bytes of the shellcode `0xFC` and 
 `0x48` and walk through the bit shifting process. It should look something 
@@ -160,7 +162,7 @@ pixel LSBs. The whole steganography technique depends on this being possible.
 ## Reassembling Bits Back Into a Byte
 During extraction each bit is placed back into its correct position 
 using left shift and OR. This is similar to what is above but just a left shitf and OR
-
+```
 Start:         bReassembled = 0 0 0 0 0 0 0 0
 bit 7 = 1:     1 << 7 = 1 0 0 0 0 0 0 0
 OR result  1 0 0 0 0 0 0 0
@@ -169,7 +171,8 @@ OR result  1 1 0 0 0 0 0 0
 bit 5 = 1:     1 << 5 = 0 0 1 0 0 0 0 0
 OR result  1 1 1 0 0 0 0 0
 ... continues until ...
-Final:         1 1 1 1 1 1 0 0 = 0xFC 
+Final:         1 1 1 1 1 1 0 0 = 0xFC
+```
 
 ## Full Embedding Flow
 ![shift3](images/full.png)
