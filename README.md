@@ -175,11 +175,14 @@ Final:         1 1 1 1 1 1 0 0 = 0xFC
 ![shift3](images/full.png)
 
 ## Project Structure
+
+\```
 stenloader/
-├── enc.c         ← embedder (XOR encrypt + LSB embed into BMP)
-├── readrun.c     ← loader (extract + decrypt + execute)
-├── snail.bmp     ← original BMP
-└── sten.bmp      ← output BMP with hidden payload
+├── enc.c        ← embedder (XOR encrypt + LSB embed into BMP)
+├── readrun.c    ← loader (extract + decrypt + execute)
+├── snail.bmp    ← original BMP
+└── sten.bmp     ← output BMP with hidden payload
+\```
 
 ## Disclaimer
 
