@@ -173,3 +173,22 @@ Final:         1 1 1 1 1 1 0 0 = 0xFC
 
 ## Full Embedding Flow
 ![shift3](images/full.png)
+
+## Project Structure
+stenloader/
+├── enc.c         ← embedder (XOR encrypt + LSB embed into BMP)
+├── readrun.c     ← loader (extract + decrypt + execute)
+├── snail.bmp     ← original BMP
+└── sten.bmp      ← output BMP with hidden payload
+
+## Disclaimer
+
+This is a learning project built in an isolated VM lab environment.
+The code is rough and comments are written for personal reference.
+Do not expect clean code.
+
+This project was built strictly for educational purposes to understand 
+how steganography and payload obfuscation techniques work at a low level.
+This code should not be used for any malicious or illegal activity. If 
+you are using this for anything other than learning in a controlled lab 
+environment that is on you not me.
