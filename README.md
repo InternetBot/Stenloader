@@ -9,5 +9,4 @@ write a payload directly into a `.bmp` file. I am pretty sure this can be
 done with any image format but for this project I focused on bitmap images.
 
 ## How It Works
-### High Level Flow
 ![HighLevelFlow](images/research_shellcode.png)
