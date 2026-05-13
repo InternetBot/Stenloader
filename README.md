@@ -10,3 +10,28 @@ done with any image format but for this project I focused on bitmap images.
 
 ## How It Works
 ![HighLevelFlow](images/research_shellcode.png)
+
+## XOR Encryption
+XOR encryption is pretty straightforward. The same function both encrypts 
+and decrypts the shellcode applying XOR twice with the same key restores 
+it to the original value. In our case the key is `0xBD`. The key can be 
+changed but I just stuck with `0xBD` due to its nature which will make more 
+sense as we go further. Also possibly try to avoid using `0xFE` as your key 
+since that is what is used to clear the LSB (Least Significant Bit) during 
+the embedding process.
+
+## BMP File
+A BMP file has 3 sections but we only care about the third one which is the 
+Pixel Data. The three sections are the File Header, DIB Header, and Pixel Data.
+
+Reference: https://engineering.purdue.edu/ece264/16au/hw/HW13
+
+At some point in the code you will see me reference the pixel data offset 
+from the header. The reason for that is the pixel data offset is stored at 
+byte 10 in the File Header. So at byte 10 it basically says "hey, the pixel 
+data starts at byte 54" and the code jumps straight there. Check the snippet 
+below. 
+```c
+DWORD dwPixelOffset = *(DWORD*)(pBmpBuffer + 10);
+// dwPixelOffset = 54
+```
