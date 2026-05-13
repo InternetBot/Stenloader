@@ -36,6 +36,7 @@ DWORD dwPixelOffset = *(DWORD*)(pBmpBuffer + 10);
 // dwPixelOffset = 54
 ```
 ##LSB Stenography
+
 Now this is the fun part. LSB steganography hides data inside the Least 
 Significant Bit of each pixel byte. Remember a pixel byte is made up of 
 8 bits so changing the very last bit makes a difference that is completely 
@@ -117,6 +118,7 @@ So your BMP needs at least 2208 pixel bytes available after the header for
 the shellcode to fit. The bigger the image the more space you have.
 
 ##Extracting the bit
+
 Like I said before there is no way to directly access a single bit like 
 `byte.bit[7]`  it simply does not exist in C. So in this scenario we are 
 going to use what is called bit shifting. Bit shifting moves the target bit 
