@@ -35,3 +35,15 @@ below.
 DWORD dwPixelOffset = *(DWORD*)(pBmpBuffer + 10);
 // dwPixelOffset = 54
 ```
+##LSB Stenography
+Now this is the fun part. LSB steganography hides data inside the Least 
+Significant Bit of each pixel byte. Remember a pixel byte is made up of 
+8 bits so changing the very last bit makes a difference that is completely 
+invisible to the human eye. So let's say we have a pixel byte like this:
+
+![lsb](images/lsb.png)
+
+We can change the Least Significant Bit from 1 to 0 and there will be no 
+visual change to the image whatsoever.
+
+![HighLevelFlow](images/lsb1.png)
