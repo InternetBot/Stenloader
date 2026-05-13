@@ -86,7 +86,7 @@ LSB which always gets forced to 0. That is the whole point of `0xFE` it
 is a mask that surgically clears only the last bit and nothing else.
 
 Once the bit is cleared we can then set our LSB to our data bit using OR:
-
+```
 Example 1:
 Cleared:      1 0 1 1 0 1 0 0  ← LSB cleared to 0
 Your bit (1): 0 0 0 0 0 0 0 1  ← data bit we want to embed (1)
@@ -96,7 +96,7 @@ Example 2:
 Cleared:      1 0 0 0 1 1 1 0  ← LSB cleared to 0
 Your bit (0): 0 0 0 0 0 0 0 0  ← data bit we want to embed (0)
 OR result:    1 0 0 0 1 1 1 0  ← LSB stays 0
-
+```
 ![or](images/or.png)
 
 As you can see when our bit is 1 the OR sets the LSB to 1. When our 
