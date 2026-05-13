@@ -141,8 +141,9 @@ So now we are going to take the first two bytes of the shellcode `0xFC` and
 `0x48` and walk through the bit shifting process. It should look something 
 like this:
 
-![shift](images/shift2.png)
-![shift](images/shift3.png)
+![shift2](images/shfit2.png)
+
+![shift3](images/shift3.png)
 
 Notice how shifting right by 7 pushes bit 7 all the way to position 0 
 where we can read it. Shifting right by 6 pushes bit 6 to position 0 
