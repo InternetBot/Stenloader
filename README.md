@@ -9,9 +9,11 @@ write a payload directly into a `.bmp` file. I am pretty sure this can be
 done with any image format but for this project I focused on bitmap images.
 
 ## How It Works
+
 ![HighLevelFlow](images/research_shellcode.png)
 
 ## XOR Encryption
+
 XOR encryption is pretty straightforward. The same function both encrypts 
 and decrypts the shellcode applying XOR twice with the same key restores 
 it to the original value. In our case the key is `0xBD`. The key can be 
@@ -21,6 +23,7 @@ since that is what is used to clear the LSB (Least Significant Bit) during
 the embedding process.
 
 ## BMP File
+
 A BMP file has 3 sections but we only care about the third one which is the 
 Pixel Data. The three sections are the File Header, DIB Header, and Pixel Data.
 
@@ -35,7 +38,7 @@ below.
 DWORD dwPixelOffset = *(DWORD*)(pBmpBuffer + 10);
 // dwPixelOffset = 54
 ```
-##LSB Stenography
+## LSB Stenography
 
 Now this is the fun part. LSB steganography hides data inside the Least 
 Significant Bit of each pixel byte. Remember a pixel byte is made up of 
@@ -105,6 +108,7 @@ bit is 0 the LSB stays 0. Everything else in the pixel byte remains
 completely untouched.
 
 ## Capacity Calculation
+
 A common issue you might run into is your shellcode being too large to fit 
 into the BMP. Each pixel byte of the image holds 1 bit of our shellcode and 
 each byte of shellcode needs a total of 8 bits. So 1 byte of shellcode takes 
@@ -117,7 +121,7 @@ For our 276 byte shellcode:
 So your BMP needs at least 2208 pixel bytes available after the header for 
 the shellcode to fit. The bigger the image the more space you have.
 
-##Extracting the bit
+## Extracting the bit
 
 Like I said before there is no way to directly access a single bit like 
 `byte.bit[7]`  it simply does not exist in C. So in this scenario we are 
